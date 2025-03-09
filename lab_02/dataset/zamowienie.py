@@ -1,0 +1,21 @@
+import csv
+
+headers = ['Kraj', 'Sprzedawca', 'Data zamowienia', 'idZamowienia', 'Utarg']
+data = [
+    ['Polska', 'Jan Kowalski', '2025-03-01', 1, 1000],
+    ['Niemcy', 'Anna Nowak', '2025-03-02', 2, 1500],
+    ['USA', 'John Smith', '2025-03-03', 3, 2000],
+    ['Francja', 'Paul Dupont', '2025-03-04', 4, 1800],
+    ['Wielka Brytania', 'Emma Brown', '2025-03-05', 5, 2200],
+    ['Hiszpania', 'Antonio Garcia', '2025-03-06', 6, 1400],
+    ['Włochy', 'Mario Rossi', '2025-03-07', 7, 1300],
+    ['Kanada', 'James Lee', '2025-03-08', 8, 2100],
+    ['Australia', 'Lucas White', '2025-03-09', 9, 1700],
+    ['Japonia', 'Taro Yamada', '2025-03-10', 10, 1600],
+]
+
+
+with open('zamowienia.csv', mode='w', newline='', encoding='utf-8') as file:
+    writer = csv.writer(file)
+    writer.writerow(headers)
+    writer.writerows(data)
