@@ -18,6 +18,7 @@ def logging(func):
 def suma(a,b):
     return a + b
 
+# Zadanie 2
 class User:
     def __init__(self, permissions):
         self.permissions = permissions
