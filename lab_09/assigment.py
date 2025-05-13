@@ -81,7 +81,7 @@ def df_into_csv():
 # Zad 5
 """
 Ponieważ lista w Pytonie przechowuje jedynie referencje do obiektów, a nie same obiekty. 
-Dlatego rozmiar listy nie jest sumą rozmiarów jej elemtów. Podczas wstawiania elementów,Python dynamicznie reaokuje pamięć,
+Dlatego rozmiar listy nie jest sumą rozmiarów jej elemtów. Podczas wstawiania elementów, Python dynamicznie reaokuje pamięć,
 dlatego rozmiar rośnie.
 https://stackoverflow.com/questions/65547276/how-allocation-of-memory-for-list-works-in-python-why-size-of-list-is-not-sam
 """
