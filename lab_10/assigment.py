@@ -108,13 +108,15 @@ def powitanie_z_wiekiem(birthday_date_str):
         previous_birthday = this_year_birthday.replace(year=now.year - 1)
     else:
         previous_birthday = this_year_birthday
-    since_previous_birthday = relativedelta(now, previous_birthday)
+    od_poprzednich = relativedelta(now, previous_birthday)
 
     print(f"Witaj! Na dzień dzisiejszy masz {how_old.years} lat oraz {how_old.months * 30 + how_old.days} dni.")
     print(f"Razem daje to imponujące {days_from_birth} dni!")
     print(f"Twoje najbliższe urodziny będą miały miejsce w dniu {next_birthday} "
           f"czyli za {to_nearest_birthday.months} miesięcy oraz {to_nearest_birthday.days} dni.")
-    print(f"Od poprzednich urodzin minęło {since_previous_birthday.months} miesięcy i {since_previous_birthday.days} dni.")
+    print(f"Od poprzednich urodzin minęło {od_poprzednich.months} miesięcy i {od_poprzednich.days} dni.")
+
+
 
 
 path = '../lab_02/dataset/zamowienia.csv'
