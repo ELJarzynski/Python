@@ -6,7 +6,7 @@ import psutil
 import string
 import this
 import time
-
+import os
 
 # Zad 2
 def enigma():
@@ -24,12 +24,19 @@ def crawl(link, delay=3):
         response = requests.get(link, timeout=10)
         response.raise_for_status()
 
-        # Tworzenie nazwy pliku na podstawie url
+        # Tworzenie folderu, jeśli nie istnieje
+        folder = "html_python"
+        os.makedirs(folder, exist_ok=True)
+
+        # Tworzenie nazwy pliku na podstawie URL
         filename = link.replace("https://", "").replace("/", "_") + ".html"
-        with open(filename, 'w', encoding='utf-8') as f:
+        filepath = os.path.join(folder, filename)
+
+        # Zapis do pliku w podfolderze
+        with open(filepath, 'w', encoding='utf-8') as f:
             f.write(response.text)
 
-        print(f"crawl ended for {link} saved to {filename}")
+        print(f"crawl ended for {link} saved to {filepath}")
     except Exception as e:
         print(f"Błąd podczas pobierania {link}: {e}")
 
@@ -89,11 +96,12 @@ def slow_read(file_path: str, result_list: list, thread_id: int):
                 time.sleep(0.05)
 
             result_list.append((file_path, result))
+
     except FileNotFoundError:
         print(f"[Wątek {thread_id}] Plik nie znaleziony: {file_path}")
 
 def file_reader():
-    file_names = ["file1.txt", "file2.txt", "file3.txt", "file4.txt"]
+    file_names = ["./txt_files/file1.txt", "./txt_files/file2.txt", "./txt_files/file3.txt", "./txt_files/file4.txt"]
     threads = []
     results = []
 
