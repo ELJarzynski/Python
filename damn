@@ -1,0 +1,71 @@
+import os
+# Kluczowe ustawienie dla OpenCV
+os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
+
+import cv2
+import numpy as np
+from pathlib import Path
+from typing import Optional, Tuple, List
+
+from .exceptions import ParseError, ValidationError, ChannelNotFound
+from .base import BaseReader
+
+class EXRReader(BaseReader):
+    def __init__(self, file_path: Path | str):
+        super().__init__(file_path)
+        # Naprawiamy problem ze ścieżkami na Windows
+        self.file_path = Path(file_path).resolve()
+        
+        if not self.file_path.exists():
+            raise FileNotFoundError(f"File not found: {self.file_path}")
+
+        # Wczytujemy dane
+        data = cv2.imread(str(self.file_path), cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH | cv2.IMREAD_UNCHANGED)
+        
+        if data is None:
+            raise ParseError(f"Failed to open EXR: {self.file_path}")
+            
+        self.data: np.ndarray = data
+        self.height, self.width = self.data.shape[:2]
+        self._num_channels = self.data.shape[2] if len(self.data.shape) > 2 else 1
+        
+        # Twoje kanały
+        self.channels = ["rgb_.R", "rgb_.G", "rgb_.B", "inst_.V", "sem_.V"]
+
+    def list_channels(self) -> List[str]:
+        return self.channels
+
+    def read(self) -> np.ndarray:
+        if self._num_channels >= 4:
+            return self.read_instance()
+        return self.read_rgb()
+
+    def read_rgb(self) -> np.ndarray:
+        if self._num_channels >= 3:
+            # Wycinamy RGB i odwracamy BGR -> RGB
+            rgb = self.data[:, :, :3]
+            return rgb[:, :, ::-1].copy()
+        raise ChannelNotFound("Missing RGB channels")
+
+    def read_instance(self) -> np.ndarray:
+        if self._num_channels >= 4:
+            return self.data[:, :, 3].copy()
+        raise ChannelNotFound("Channel not found: inst_.V")
+
+    def read_semantic(self) -> np.ndarray:
+        if self._num_channels >= 5:
+            return self.data[:, :, 4].copy()
+        raise ChannelNotFound("Channel not found: sem_.V")
+
+    def _get_resolution(self) -> Tuple[int, int]:
+        return self.width, self.height
+
+    def close(self) -> None:
+        # Nie przypisujemy None, żeby Mypy nie krzyczało o "Not indexable"
+        self.data = np.array([]) 
+
+    def __enter__(self) -> "EXRReader":
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        self.close()
